@@ -16,12 +16,11 @@ export class UserService {
 
   constructor(
     private prisma: PrismaService,
-
-  ) { }
+  ) {}
 
   async create(dto: CreateUserDto) {
     this.logger.log(`POST: user/register: Register user started`);
-    
+
     // Check if password and passwordConfirmation match
     if (dto.password !== dto.passwordconf) throw new BadRequestException('Passwords do not match');
 
@@ -36,7 +35,7 @@ export class UserService {
     const hashedPassword = await bcrypt.hash(dto.password, 10);
 
     try {
-      
+
       const {passwordconf , ...newUserData} = dto
       newUserData.password = hashedPassword;
 
@@ -53,7 +52,7 @@ export class UserService {
       });
 
       return newuser;
-      
+
     } catch (error) {
       this.prismaErrorHanler(error, "POST", dto.email);
       this.logger.error(`POST: error: ${error}`);
@@ -62,7 +61,7 @@ export class UserService {
   }
 
   async findAll() {
-    
+
     try {
       const users = await this.prisma.user.findMany({
         select: {
@@ -80,15 +79,15 @@ export class UserService {
       this.logger.error(`GET: error: ${error}`);
       throw new InternalServerErrorException('Server error');
     }
-        
+
   }
 
   async findOne(field: string, value: string, user: User) {
-        
+
     if (value !== user[field] && user.role !== 'admin') throw new UnauthorizedException('Unauthorized');
-    
+
     const whereData = field === 'id' ? {id: value} : {email: value};
-    
+
     try {
       const user = await this.prisma.user.findUniqueOrThrow({
         where: whereData,
@@ -110,15 +109,15 @@ export class UserService {
       this.logger.error(`GET/{id}: error: ${error}`);
       throw new InternalServerErrorException('Server error');
     }
-    
+
   }
 
   async update(field: string, value: string, dto: UpdateUserDto, user: User) {
 
     if (value !== user[field] && user.role !== 'admin') throw new UnauthorizedException('Unauthorized');
-    
+
     const whereData = field === 'id' ? {id: value} : {email: value};
-    
+
     if (user.role !== 'admin') delete dto.role;
 
     const {passwordconf , ...newUserData} = dto
@@ -145,13 +144,13 @@ export class UserService {
         }
       });
       return updatedUser;
-      
+
     } catch (error) {
       this.prismaErrorHanler(error, "PATCH", value);
       this.logger.error(`PATCH: error: ${error}`);
       throw new InternalServerErrorException('Server error');
     }
-     
+
   }
 
   async remove(field: string, value: string, user: User) {
@@ -168,10 +167,10 @@ export class UserService {
           name: true,
         }
       });
-      
+
       this.logger.warn(`DELETE: ${JSON.stringify(deletedUser)}`);
       return {message: "User deleted"}
-      
+
     } catch (error) {
       this.prismaErrorHanler(error, "DELETE", value);
       this.logger.error(`DELETE: error: ${error}`);
@@ -180,8 +179,8 @@ export class UserService {
 
 
   }
-  
-  prismaErrorHanler = (error: any, method: string, value: string = null) => { 
+
+  prismaErrorHanler = (error: any, method: string, value: string = null) => {
    if (error.code === 'P2002') {
      this.logger.warn(`${method}: User already exists: ${value}`);
      throw new BadRequestException('User already exists');

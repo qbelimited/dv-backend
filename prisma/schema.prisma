@@ -32,3 +32,13 @@ model User {
   //Relations and Indexes
  
 }
+
+model Dvplates {
+  id               String    @id @default(uuid())
+  dv_plate_number  String    @unique
+  serial_number    String    @unique
+  creation_date    String?
+  batch            String    @unique
+  insertedAt       DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+}
