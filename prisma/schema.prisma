@@ -1,8 +1,5 @@
 // This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+// Learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
   provider = "prisma-client-js"
@@ -15,9 +12,10 @@ datasource db {
 
 enum Role {
   admin
+  embosser
+  manufacturer
   user
 }
-
 
 model User {
   id            String    @id @default(uuid())
@@ -29,8 +27,16 @@ model User {
   image         String?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
-  //Relations and Indexes
- 
+  activities    Activity[] // Add the opposite relation field here
+}
+
+model Activity {
+  id        String   @id @default(uuid())
+  action    Action
+  user_id   String   // Correct field name
+  user      User     @relation(fields: [user_id], references: [id]) // Relation to User
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Dvplates {
@@ -38,7 +44,66 @@ model Dvplates {
   dv_plate_number  String    @unique
   serial_number    String    @unique
   creation_date    String?
-  batch            String    @unique
+  description      String?
   insertedAt       DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
+  batchId          String    // Foreign key to Dvbatches
+  batchDetails     Dvbatches @relation(fields: [batchId], references: [id]) // Relation to Dvbatches
+}
+
+model Dvbatches {
+  id             String    @id @default(uuid())
+  batch_number   String    @unique
+  requested_by   String?
+  status         String?
+  description    String?
+  total_dvplates Int
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  manufacturerId String?
+  dvplates       Dvplates[] // One-to-many relation (a batch has many dvplates)
+}
+
+model BatchHistory {
+  id         String   @id @default(uuid())
+  batchId    String
+  status     String
+  userId     String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  batch      Dvbatches @relation(fields: [batchId], references: [id])
+  user       User      @relation(fields: [userId], references: [id])
+}
+
+model manufacturers {
+  id                String       @id @default(uuid())
+  manufacturer_name String       @unique
+  address           String?
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+  contactPersons    ContactPerson[] // One-to-many relation (a manufacturer has many contact persons)
+}
+
+model ContactPerson {
+  id                   String       @id @default(uuid())
+  contact_person_name  String       @unique
+  email                String       @unique
+  phone_number         String?
+  createdAt            DateTime     @default(now())
+  updatedAt            DateTime     @updatedAt
+  manufacturerId       String?
+  manufacturer         manufacturers? @relation(fields: [manufacturerId], references: [id]) // Make relation optional
+}
+
+enum Action {
+  CREATE
+  UPDATE
+  DELETE
+  LOGIN_ATTEMPT
+  LOGIN_SUCCESSFUL
+  LOGIN_FAILURE
+  LOGOUT
+  FORGOT_PASSWORD_ATTEMPT
+  LOGIN_STATUS_CHANGE
 }

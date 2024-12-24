@@ -1,4 +1,4 @@
-import { Controller, Post, UploadedFiles, UseInterceptors, Res, Get, Query } from '@nestjs/common';
+import { Controller, Post, UploadedFiles, UseInterceptors, Res, Get, Query, Put, Body } from '@nestjs/common';
 import { DVSerialService } from './dv-plates.service';
 import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
@@ -23,15 +23,12 @@ export class DVSerialController {
       const allEntries = [];
       for (const file of files) {
         const fileContent = await this.dvSerialService.readFileContent(file);
-        const entries = this.dvSerialService.parseSerialNumberFile(fileContent);
+        const entries = await this.dvSerialService.parseSerialNumberFile(fileContent); // Await the promise
         allEntries.push(...entries);
-      }
+      }      
 
       // Insert entries into the database
       await this.dvSerialService.saveEntriesToDatabase(allEntries);
-
-      const outputFilePath = path.join(__dirname, 'output.csv');
-      this.dvSerialService.exportToCSV(allEntries, outputFilePath);
 
       return res.json({
         message: 'Files parsed successfully',
@@ -76,13 +73,46 @@ export class DVSerialController {
     }
   }
 
-  @Get('get-counts')
-  async getBatchCounts(@Res() res: Response) {
+  @Get('batches')
+  async getBatches(@Res() res: Response) {
     try {
-      const counts = await this.dvSerialService.getBatchCounts();
-      return res.json(counts);
+      const batches = await this.dvSerialService.getBatches();
+      return res.json(batches);
     } catch (error) {
-      return res.status(500).json({ message: 'Error getting batch counts', error: error.message });
+      return res.status(500).json({ message: 'Error getting batches', error: error.message });
     }
   }
+
+  @Get('batch-by-id')
+  async getBatchById(@Query('id') id: string, @Res() res: Response) {
+    try {
+      const batch = await this.dvSerialService.getBatchById(id);
+      return res.json(batch);
+    } catch (error) {
+      return res.status(500).json({ message: 'Error getting batch by id', error: error.message });
+    }
+  }
+  
+  @Put('batch-update')
+  async updateBatch(@Body() body: { id: string, batch_number: string, requested_by: string, status: string, total_dvplates: number }, @Res() res: Response) {
+    try {
+      const { id, batch_number, requested_by, status, total_dvplates } = body;
+      await this.dvSerialService.updateBatch(id, batch_number, requested_by, status, total_dvplates);
+      return res.json({ message: 'Batch updated successfully' });
+    } catch (error) {
+      return res.status(500).json({ message: 'Error updating batch', error: error.message });
+    }
+  }
+
+  @Post('batch-create')
+  async createBatch(@Body() body: { batch_number: string, requested_by: string, status: string, total_dvplates: number, manufacturer_id: string }, @Res() res: Response) {
+    try {
+      const { batch_number, requested_by, status, total_dvplates, manufacturer_id } = body;
+      await this.dvSerialService.createBatch(batch_number, requested_by, status, total_dvplates, manufacturer_id);
+      return res.json({ message: 'Batch created successfully' });
+    } catch (error) {
+      return res.status(500).json({ message: 'Error creating batch', error: error.message });
+    }
+  }
+
 }
