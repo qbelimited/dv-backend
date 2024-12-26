@@ -212,9 +212,13 @@ export class DVSerialService {
     }); 
   } 
 
-  async getManufacturers() { 
-    return this.prisma.manufacturers.findMany(); 
-  } 
+  async getManufacturers() {
+    return this.prisma.manufacturers.findMany({
+      include: {
+        contactPersons: true,
+      },
+    });
+  }
 
   async getManufacturerById(id: string) { 
     return this.prisma.manufacturers.findUnique({ where: { id }, }); 
@@ -256,4 +260,30 @@ export class DVSerialService {
   async deleteBatch(id: string) { 
     return this.prisma.dvbatches.delete({ where: { id }, }); 
   }
+
+  async deleteManufacturer(id: string) {
+    return this.prisma.manufacturers.delete({ where: { id } });
+  }
+
+  async updateManufacturer(id: string, name: string, address: string) {
+    return this.prisma.manufacturers.update({
+      where: { id },
+      data: {
+        manufacturer_name: name,
+        address: address,
+      },
+    });
+  }
+
+  async searchManufacturer(name: string) {
+    return this.prisma.manufacturers.findMany({
+      where: {
+        manufacturer_name: {
+          contains: name,
+        },
+      },
+    });
+  }
+
+  
 }

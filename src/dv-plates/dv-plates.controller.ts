@@ -1,4 +1,4 @@
-import { Controller, Post, UploadedFiles, UseInterceptors, Res, Get, Query, Put, Body } from '@nestjs/common';
+import { Controller, Post, UploadedFiles, UseInterceptors, Res, Get, Query, Put, Body, Delete } from '@nestjs/common';
 import { DVSerialService } from './dv-plates.service';
 import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
@@ -112,6 +112,57 @@ export class DVSerialController {
       return res.json({ message: 'Batch created successfully' });
     } catch (error) {
       return res.status(500).json({ message: 'Error creating batch', error: error.message });
+    }
+  }
+
+  @Get('manufacturers')
+  async getManufacturers(@Res() res: Response) {
+    try {
+      const manufacturers = await this.dvSerialService.getManufacturers();
+      return res.json(manufacturers);
+    } catch (error) {
+      return res.status(500).json({ message: 'Error getting manufacturers', error: error.message });
+    }
+  }
+
+  @Get('manufacturer-by-id')
+  async getManufacturerById(@Query('id') id: string, @Res() res: Response) {
+    try {
+      const manufacturer = await this.dvSerialService.getManufacturerById(id);
+      return res.json(manufacturer);
+    } catch (error) {
+      return res.status(500).json({ message: 'Error getting manufacturer by id', error: error.message });
+    }
+  }
+
+  @Post('manufacturer-create')
+  async createManufacturer(@Body() body: { name: string, address?: string }, @Res() res: Response) {
+    try {
+      const { name, address } = body;
+      await this.dvSerialService.createManufacturer(name, address);
+      return res.json({ message: 'Manufacturer created successfully' });
+    } catch (error) {
+      return res.status(500).json({ message: 'Error creating manufacturer', error: error.message });
+    }
+  }
+
+  @Get('manufacturer-search')
+  async searchManufacturer(@Query('name') name: string, @Res() res: Response) {
+    try {
+      const result = await this.dvSerialService.searchManufacturer(name);
+      return res.json(result);
+    } catch (error) {
+      return res.status(500).json({ message: 'Error searching manufacturer', error: error.message });
+    }
+  }
+
+  @Delete('manufacturer')
+  async deleteManufacturer(@Query('id') id: string, @Res() res: Response) {
+    try {
+      await this.dvSerialService.deleteManufacturer(id);
+      return res.json({ message: 'Manufacturer deleted successfully' });
+    } catch (error) {
+      return res.status(500).json({ message: 'Error deleting manufacturer', error: error.message });
     }
   }
 
