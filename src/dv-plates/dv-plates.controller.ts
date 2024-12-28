@@ -136,11 +136,11 @@ export class DVSerialController {
   }
 
   @Post('manufacturer-create')
-  async createManufacturer(@Body() body: { name: string, address?: string, contact_person_name: string, email: string, phone_number?: string }, @Res() res: Response) {
+  async createManufacturer(@Body() body: { manufacturer_name: string, address?: string, contact_person_name: string, email: string, phone_number?: string }, @Res() res: Response) {
     try {
-      const { name, address, contact_person_name, email, phone_number } = body; 
+      const { manufacturer_name, address, contact_person_name, email, phone_number } = body; 
       // Create the manufacturer 
-      const manufacturer = await this.dvSerialService.createManufacturer(name, address); 
+      const manufacturer = await this.dvSerialService.createManufacturer(manufacturer_name, address); 
 
       await this.dvSerialService.createContactPerson(contact_person_name, email, phone_number, manufacturer.id);
 
