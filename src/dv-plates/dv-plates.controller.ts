@@ -136,10 +136,14 @@ export class DVSerialController {
   }
 
   @Post('manufacturer-create')
-  async createManufacturer(@Body() body: { name: string, address?: string }, @Res() res: Response) {
+  async createManufacturer(@Body() body: { name: string, address?: string, contact_person_name: string, email: string, phone_number?: string }, @Res() res: Response) {
     try {
-      const { name, address } = body;
-      await this.dvSerialService.createManufacturer(name, address);
+      const { name, address, contact_person_name, email, phone_number } = body; 
+      // Create the manufacturer 
+      const manufacturer = await this.dvSerialService.createManufacturer(name, address); 
+
+      await this.dvSerialService.createContactPerson(contact_person_name, email, phone_number, manufacturer.id);
+
       return res.json({ message: 'Manufacturer created successfully' });
     } catch (error) {
       return res.status(500).json({ message: 'Error creating manufacturer', error: error.message });
@@ -166,4 +170,14 @@ export class DVSerialController {
     }
   }
 
+  @Put('dvplates-update')
+  async updatePlate(@Body() body: { id: string, description: string }, @Res() res: Response) {
+    try {
+      const { id, description } = body;
+      await this.dvSerialService.updatePlate(id, description);
+      return res.json({ message: 'Plate updated successfully' });
+    } catch (error) {
+      return res.status(500).json({ message: 'Error updating plate', error: error.message });
+    }
+  }
 }

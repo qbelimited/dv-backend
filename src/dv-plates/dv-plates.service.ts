@@ -127,6 +127,7 @@ export class DVSerialService {
         serial_number: true,
         creation_date: true,
         insertedAt: true,
+        description: true,
       },
     });
   
@@ -203,14 +204,25 @@ export class DVSerialService {
   }
 
   // Methods to handle manufacturers 
-  async createManufacturer(name: string, address?: string) { 
+  async createManufacturer(name: string, address?: string ) { 
     return this.prisma.manufacturers.create({ 
       data: { 
         manufacturer_name: name, 
         address: address || '', 
       }, 
     }); 
-  } 
+  }
+
+  async createContactPerson(name: string, email: string, phone_number: string, manufacturer_id: string) {
+    return this.prisma.contactPerson.create({
+      data: {
+        contact_person_name: name,
+        email,
+        phone_number,
+        manufacturerId: manufacturer_id,
+      },
+    });
+  }
 
   async getManufacturers() {
     return this.prisma.manufacturers.findMany({
@@ -243,6 +255,15 @@ export class DVSerialService {
   
   async getBatchById(id: string) { 
     return this.prisma.dvbatches.findUnique({ where: { id }, }); 
+  }
+
+  async updatePlate(id: string, description: string, ) {
+    return this.prisma.dvplates.update({
+      where: { id },
+      data: {
+        description
+      },
+    });
   }
 
   async updateBatch(id: string, batch_number: string, requested_by: string, status: string, total_dvplates: number) { 

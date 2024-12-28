@@ -112,6 +112,23 @@ export class UserService {
 
   }
 
+  async createUser(name: string, email: string, password: string, role: Role) {
+    try {
+      const newUser = await this.prisma.user.create({
+        data: {
+          name,
+          email,
+          password,
+          role,
+        },
+      });
+      return newUser;
+    } catch (error) {
+      this.logger.error(`Error creating user: ${error.message || error}`);
+      throw new InternalServerErrorException('Server error');
+    }
+  }
+  
   async update(field: string, value: string, dto: UpdateUserDto, user: User) {
 
     if (value !== user[field] && user.role !== 'admin') throw new UnauthorizedException('Unauthorized');

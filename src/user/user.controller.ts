@@ -125,3 +125,16 @@ export class UserController {
   }
 
 }
+
+// @Post('users/create')
+//   @ApiOperation({
+//     summary: 'CREATE USER',
+//     description: 'Public endpoint to Create a new User. It allows any user to create a new user with "user" Role.'
+//   })
+//   @ApiResponse({status: 201, description: 'Created', type: User})
+//   @ApiResponse({status: 400, description: 'Bad request'})
+//   @ApiResponse({status: 500, description: 'Server error'})             //Swagger
+//   create(@Body() createUserDto: CreateUserDto) {
+//     return this.userService.create(createUserDto);
+//   }
+  
