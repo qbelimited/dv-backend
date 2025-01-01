@@ -18,83 +18,84 @@ enum Role {
 }
 
 model User {
-  id            String    @id @default(uuid())
+  id            String         @id @default(uuid())
   name          String
-  email         String    @unique
+  email         String         @unique
   emailVerified DateTime?
   password      String
-  role          Role      @default(user)
+  role          Role           @default(user)
   image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
   activities    Activity[] // Add the opposite relation field here
+  BatchHistory  BatchHistory[]
 }
 
 model Activity {
   id        String   @id @default(uuid())
   action    Action
-  user_id   String   // Correct field name
+  user_id   String // Correct field name
   user      User     @relation(fields: [user_id], references: [id]) // Relation to User
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model Dvplates {
-  id               String    @id @default(uuid())
-  dv_plate_number  String    @unique
-  serial_number    String    @unique
-  creation_date    String?
-  description      String?
-  insertedAt       DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
-  batchId          String    // Foreign key to Dvbatches
-  batchDetails     Dvbatches @relation(fields: [batchId], references: [id]) // Relation to Dvbatches
+  id              String    @id @default(uuid())
+  dv_plate_number String    @unique
+  serial_number   String    @unique
+  creation_date   String?
+  description     String?
+  insertedAt      DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  batchId         String // Foreign key to Dvbatches
+  batchDetails    Dvbatches @relation(fields: [batchId], references: [id]) // Relation to Dvbatches
 }
 
 model Dvbatches {
-  id             String    @id @default(uuid())
-  batch_number   String    @unique
+  id             String         @id @default(uuid())
+  batch_number   String         @unique
   requested_by   String?
   status         String?
   description    String?
   total_dvplates Int
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
   manufacturerId String?
   dvplates       Dvplates[]
-  BatchHistory BatchHistory[]
+  BatchHistory   BatchHistory[]
 }
 
 model BatchHistory {
-  id         String   @id @default(uuid())
-  batchId    String
-  status     String
-  userId     String
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id        String   @id @default(uuid())
+  batchId   String
+  status    String
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  batch      Dvbatches @relation(fields: [batchId], references: [id])
-  user       User      @relation(fields: [userId], references: [id])
+  batch Dvbatches @relation(fields: [batchId], references: [id])
+  user  User      @relation(fields: [userId], references: [id])
 }
 
 model manufacturers {
-  id                String       @id @default(uuid())
-  manufacturer_name String       @unique
+  id                String          @id @default(uuid())
+  manufacturer_name String          @unique
   address           String?
-  createdAt         DateTime     @default(now())
-  updatedAt         DateTime     @updatedAt
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
   contactPersons    ContactPerson[] // One-to-many relation (a manufacturer has many contact persons)
 }
 
 model ContactPerson {
-  id                   String       @id @default(uuid())
-  contact_person_name  String       @unique
-  email                String       @unique
-  phone_number         String?
-  createdAt            DateTime     @default(now())
-  updatedAt            DateTime     @updatedAt
-  manufacturerId       String?
-  manufacturer         manufacturers? @relation(fields: [manufacturerId], references: [id]) // Make relation optional
+  id                  String         @id @default(uuid())
+  contact_person_name String         @unique
+  email               String         @unique
+  phone_number        String?
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
+  manufacturerId      String?
+  manufacturer        manufacturers? @relation(fields: [manufacturerId], references: [id]) // Make relation optional
 }
 
 enum Action {
