@@ -37,9 +37,9 @@ export async function bootstrap() {
   //Enable CORS
   app.enableCors();
 
-
-  await app.listen(3000);
-  Logger.log(`App running on Port 3000`);
+  const port = process.env.PORT || 3000;
+  await app.listen(port);
+  Logger.log(`App running on Port ${port}`);
 
 
 }
