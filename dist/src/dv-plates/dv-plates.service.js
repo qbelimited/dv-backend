@@ -100,11 +100,18 @@ let DVSerialService = class DVSerialService {
         const dvplates = await this.prisma.dvplates.findMany({
             where: dvplatesWhereClause,
             select: {
+                id: true,
                 dv_plate_number: true,
                 serial_number: true,
                 creation_date: true,
                 insertedAt: true,
                 description: true,
+                log_book_number: true,
+                batchDetails: {
+                    select: {
+                        batch_number: true,
+                    },
+                }
             },
         });
         const batchCountResults = batches.map(batch => {
@@ -208,20 +215,22 @@ let DVSerialService = class DVSerialService {
     async getBatchById(id) {
         return this.prisma.dvbatches.findUnique({ where: { id }, });
     }
-    async updatePlate(id, description) {
+    async updatePlate(id, description, log_book_number) {
         return this.prisma.dvplates.update({
             where: { id },
             data: {
-                description
+                description,
+                log_book_number,
             },
         });
     }
-    async updateBatch(id, batch_number, requested_by, status, total_dvplates) {
+    async updateBatch(id, batch_number, description, requested_by, status, total_dvplates) {
         return this.prisma.dvbatches.update({
             where: { id },
             data: {
                 batch_number,
                 requested_by,
+                description,
                 status,
                 total_dvplates,
             },

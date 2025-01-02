@@ -29,20 +29,20 @@ export declare class DVSerialService {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        email: string;
-        manufacturerId: string | null;
         contact_person_name: string;
+        email: string;
         phone_number: string | null;
+        manufacturerId: string | null;
     }>;
     getManufacturers(): Promise<({
         contactPersons: {
             id: string;
             createdAt: Date;
             updatedAt: Date;
-            email: string;
-            manufacturerId: string | null;
             contact_person_name: string;
+            email: string;
             phone_number: string | null;
+            manufacturerId: string | null;
         }[];
     } & {
         id: string;
@@ -62,66 +62,67 @@ export declare class DVSerialService {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        description: string | null;
+        manufacturerId: string | null;
         batch_number: string;
         requested_by: string | null;
         status: string | null;
+        description: string | null;
         total_dvplates: number;
-        manufacturerId: string | null;
     }>;
     getBatches(): Promise<{
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        description: string | null;
+        manufacturerId: string | null;
         batch_number: string;
         requested_by: string | null;
         status: string | null;
+        description: string | null;
         total_dvplates: number;
-        manufacturerId: string | null;
     }[]>;
     getBatchById(id: string): Promise<{
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        description: string | null;
+        manufacturerId: string | null;
         batch_number: string;
         requested_by: string | null;
         status: string | null;
+        description: string | null;
         total_dvplates: number;
-        manufacturerId: string | null;
     }>;
-    updatePlate(id: string, description: string): Promise<{
+    updatePlate(id: string, description: string, log_book_number: string): Promise<{
         id: string;
         updatedAt: Date;
         description: string | null;
         dv_plate_number: string;
         serial_number: string;
         creation_date: string | null;
+        log_book_number: string | null;
         insertedAt: Date;
         batchId: string;
     }>;
-    updateBatch(id: string, batch_number: string, requested_by: string, status: string, total_dvplates: number): Promise<{
+    updateBatch(id: string, batch_number: string, description: string, requested_by: string, status: string, total_dvplates: number): Promise<{
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        description: string | null;
+        manufacturerId: string | null;
         batch_number: string;
         requested_by: string | null;
         status: string | null;
+        description: string | null;
         total_dvplates: number;
-        manufacturerId: string | null;
     }>;
     deleteBatch(id: string): Promise<{
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        description: string | null;
+        manufacturerId: string | null;
         batch_number: string;
         requested_by: string | null;
         status: string | null;
+        description: string | null;
         total_dvplates: number;
-        manufacturerId: string | null;
     }>;
     deleteManufacturer(id: string): Promise<{
         id: string;

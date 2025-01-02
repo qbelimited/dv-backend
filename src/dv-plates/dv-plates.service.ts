@@ -123,6 +123,7 @@ export class DVSerialService {
     const dvplates = await this.prisma.dvplates.findMany({
       where: dvplatesWhereClause,
       select: {
+        id: true,
         dv_plate_number: true,
         serial_number: true,
         creation_date: true,

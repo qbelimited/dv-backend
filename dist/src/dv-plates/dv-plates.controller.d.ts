@@ -12,6 +12,7 @@ export declare class DVSerialController {
     updateBatch(body: {
         id: string;
         batch_number: string;
+        description: string;
         requested_by: string;
         status: string;
         total_dvplates: number;
@@ -37,5 +38,6 @@ export declare class DVSerialController {
     updatePlate(body: {
         id: string;
         description: string;
+        log_book_number: string;
     }, res: Response): Promise<Response<any, Record<string, any>>>;
 }

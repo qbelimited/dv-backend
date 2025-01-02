@@ -94,8 +94,8 @@ let DVSerialController = class DVSerialController {
     }
     async updateBatch(body, res) {
         try {
-            const { id, batch_number, requested_by, status, total_dvplates } = body;
-            await this.dvSerialService.updateBatch(id, batch_number, requested_by, status, total_dvplates);
+            const { id, batch_number, requested_by, description, status, total_dvplates } = body;
+            await this.dvSerialService.updateBatch(id, batch_number, description, requested_by, status, total_dvplates);
             return res.json({ message: 'Batch updated successfully' });
         }
         catch (error) {
@@ -161,8 +161,8 @@ let DVSerialController = class DVSerialController {
     }
     async updatePlate(body, res) {
         try {
-            const { id, description } = body;
-            await this.dvSerialService.updatePlate(id, description);
+            const { id, description, log_book_number } = body;
+            await this.dvSerialService.updatePlate(id, description, log_book_number);
             return res.json({ message: 'Plate updated successfully' });
         }
         catch (error) {

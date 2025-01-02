@@ -23,8 +23,9 @@ async function bootstrap() {
     const document = swagger_1.SwaggerModule.createDocument(app, config);
     swagger_1.SwaggerModule.setup('api', app, document, common_2.swaggerOptions);
     app.enableCors();
-    await app.listen(3000);
-    common_1.Logger.log(`App running on Port 3000`);
+    const port = process.env.PORT || 3000;
+    await app.listen(port);
+    common_1.Logger.log(`App running on Port ${port}`);
 }
 bootstrap();
 //# sourceMappingURL=main.js.map
