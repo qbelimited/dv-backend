@@ -128,6 +128,12 @@ export class DVSerialService {
         creation_date: true,
         insertedAt: true,
         description: true,
+        log_book_number: true,
+        batchDetails: {
+          select: {
+            batch_number: true,
+          },
+        }
       },
     });
   
@@ -257,21 +263,23 @@ export class DVSerialService {
     return this.prisma.dvbatches.findUnique({ where: { id }, }); 
   }
 
-  async updatePlate(id: string, description: string, ) {
+  async updatePlate(id: string, description: string, log_book_number: string) {
     return this.prisma.dvplates.update({
       where: { id },
       data: {
-        description
+        description,
+        log_book_number,
       },
     });
   }
 
-  async updateBatch(id: string, batch_number: string, requested_by: string, status: string, total_dvplates: number) { 
+  async updateBatch(id: string, batch_number: string, description: string, requested_by: string, status: string, total_dvplates: number) { 
     return this.prisma.dvbatches.update({ 
       where: { id }, 
       data: { 
         batch_number, 
         requested_by, 
+        description,
         status, 
         total_dvplates, 
       }, 

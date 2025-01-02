@@ -46,6 +46,7 @@ model Dvplates {
   serial_number   String    @unique
   creation_date   String?
   description     String?
+  log_book_number String?
   insertedAt      DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
   batchId         String // Foreign key to Dvbatches

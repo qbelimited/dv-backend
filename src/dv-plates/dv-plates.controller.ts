@@ -94,10 +94,10 @@ export class DVSerialController {
   }
   
   @Put('batch-update')
-  async updateBatch(@Body() body: { id: string, batch_number: string, requested_by: string, status: string, total_dvplates: number }, @Res() res: Response) {
+  async updateBatch(@Body() body: { id: string, batch_number: string, description: string, requested_by: string, status: string, total_dvplates: number }, @Res() res: Response) {
     try {
-      const { id, batch_number, requested_by, status, total_dvplates } = body;
-      await this.dvSerialService.updateBatch(id, batch_number, requested_by, status, total_dvplates);
+      const { id, batch_number, requested_by, description, status, total_dvplates } = body;
+      await this.dvSerialService.updateBatch(id, batch_number, description, requested_by, status, total_dvplates);
       return res.json({ message: 'Batch updated successfully' });
     } catch (error) {
       return res.status(500).json({ message: 'Error updating batch', error: error.message });
@@ -171,10 +171,10 @@ export class DVSerialController {
   }
 
   @Put('dvplates-update')
-  async updatePlate(@Body() body: { id: string, description: string }, @Res() res: Response) {
+  async updatePlate(@Body() body: { id: string, description: string, log_book_number: string }, @Res() res: Response) {
     try {
-      const { id, description } = body;
-      await this.dvSerialService.updatePlate(id, description);
+      const { id, description, log_book_number } = body;
+      await this.dvSerialService.updatePlate(id, description, log_book_number);
       return res.json({ message: 'Plate updated successfully' });
     } catch (error) {
       return res.status(500).json({ message: 'Error updating plate', error: error.message });
